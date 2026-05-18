@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "telegram-poll-bot"
+version = "1.0.0"
+requires-python = ">=3.9,<3.12"
+dependencies = [
+    "aiogram==3.13.1",
+    "flask==3.0.3",
+    "aiohttp==3.10.5",
+    "python-dotenv==1.0.1",
+    "pytz==2024.1",
+]
