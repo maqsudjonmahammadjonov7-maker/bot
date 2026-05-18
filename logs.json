@@ -1,0 +1,428 @@
+[
+    {
+        "action": "new_user",
+        "user_id": 5996676608,
+        "details": "Yangi foydalanuvchi: 𝕄𝔸ℚ𝕊𝕌𝔻𝕁𝕆ℕ ℂ𝕐𝔹𝔼ℝ",
+        "timestamp": "2026-05-18 00:16:16.852481"
+    },
+    {
+        "action": "group_add",
+        "user_id": 0,
+        "details": "Guruh qo'shildi: ALFA PREMIUM (-2072049416927)",
+        "timestamp": "2026-05-18 00:19:02.733875"
+    },
+    {
+        "action": "verified",
+        "user_id": 5996676608,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 00:19:46.165274"
+    },
+    {
+        "action": "create_poll",
+        "user_id": 5996676608,
+        "details": "So'rovnoma yaratildi: Koordinatorlarga ovoz bering",
+        "timestamp": "2026-05-18 00:22:26.939194"
+    },
+    {
+        "action": "verified",
+        "user_id": 5996676608,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 00:33:07.967589"
+    },
+    {
+        "action": "vote",
+        "user_id": 5996676608,
+        "details": "Ovoz berildi: Koordinatorlarga ovoz bering -> (Muhandislik) Xusanov Samandar",
+        "timestamp": "2026-05-18 00:33:12.061998"
+    },
+    {
+        "action": "reset_votes",
+        "user_id": 5996676608,
+        "details": "Barcha ovozlar tozalandi",
+        "timestamp": "2026-05-18 00:35:12.487679"
+    },
+    {
+        "action": "new_user",
+        "user_id": 5357661429,
+        "details": "Yangi foydalanuvchi: ABBOSBEK 🇺🇿",
+        "timestamp": "2026-05-18 00:35:37.078681"
+    },
+    {
+        "action": "new_user",
+        "user_id": 8252359524,
+        "details": "Yangi foydalanuvchi: Maqsudjon Mahammadjonov",
+        "timestamp": "2026-05-18 00:35:53.420938"
+    },
+    {
+        "action": "verified",
+        "user_id": 8252359524,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 00:35:59.522811"
+    },
+    {
+        "action": "vote",
+        "user_id": 8252359524,
+        "details": "Ovoz berildi: Koordinatorlarga ovoz bering -> (Muhandislik) Xusanov Samandar",
+        "timestamp": "2026-05-18 00:36:03.728408"
+    },
+    {
+        "action": "new_user",
+        "user_id": 7847604729,
+        "details": "Yangi foydalanuvchi: ㅤㅤn.5ㅤㅤㅤ",
+        "timestamp": "2026-05-18 00:38:11.276006"
+    },
+    {
+        "action": "verified",
+        "user_id": 7847604729,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 00:38:18.128854"
+    },
+    {
+        "action": "vote",
+        "user_id": 7847604729,
+        "details": "Ovoz berildi: Koordinatorlarga ovoz bering -> (Muhandislik) Xusanov Samandar",
+        "timestamp": "2026-05-18 00:38:22.318645"
+    },
+    {
+        "action": "verified",
+        "user_id": 5357661429,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 00:38:57.288646"
+    },
+    {
+        "action": "vote",
+        "user_id": 5357661429,
+        "details": "Ovoz berildi: Koordinatorlarga ovoz bering -> (Muhandislik) Xusanov Samandar",
+        "timestamp": "2026-05-18 00:39:29.163407"
+    },
+    {
+        "action": "reset_votes",
+        "user_id": 5996676608,
+        "details": "Barcha ovozlar tozalandi",
+        "timestamp": "2026-05-18 00:40:05.824841"
+    },
+    {
+        "action": "feedback",
+        "user_id": 5357661429,
+        "details": "Fikr qoldirildi: kotanak...",
+        "timestamp": "2026-05-18 00:40:17.117457"
+    },
+    {
+        "action": "new_user",
+        "user_id": 6228437980,
+        "details": "Yangi foydalanuvchi: 𝑱𝒂𝒎𝒔𝒉𝒊𝒅𝒋𝒐𝒏",
+        "timestamp": "2026-05-18 00:51:27.687781"
+    },
+    {
+        "action": "verified",
+        "user_id": 6228437980,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 00:51:42.901397"
+    },
+    {
+        "action": "vote",
+        "user_id": 6228437980,
+        "details": "Ovoz berildi: Koordinatorlarga ovoz bering -> (Muhandislik) Xusanov Samandar",
+        "timestamp": "2026-05-18 00:51:57.031739"
+    },
+    {
+        "action": "new_user",
+        "user_id": 8370915540,
+        "details": "Yangi foydalanuvchi: 𝑱𝒂𝒎𝒔𝒉𝒊𝒅𝒋𝒐𝒏",
+        "timestamp": "2026-05-18 00:54:34.656898"
+    },
+    {
+        "action": "reply_feedback",
+        "user_id": 5996676608,
+        "details": "Fikrga javob yuborildi: 5357661429",
+        "timestamp": "2026-05-18 00:55:41.039020"
+    },
+    {
+        "action": "vote",
+        "user_id": 5996676608,
+        "details": "Ovoz berildi: Koordinatorlarga ovoz bering -> (Muhandislik) Xusanov Samandar",
+        "timestamp": "2026-05-18 01:07:38.491816"
+    },
+    {
+        "action": "new_user",
+        "user_id": 8371416346,
+        "details": "Yangi foydalanuvchi: ㅤ 01:14",
+        "timestamp": "2026-05-18 01:14:05.306463"
+    },
+    {
+        "action": "verified",
+        "user_id": 8371416346,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 01:14:13.195631"
+    },
+    {
+        "action": "vote",
+        "user_id": 8252359524,
+        "details": "Ovoz berildi: Koordinatorlarga ovoz bering -> (Muhandislik) Xusanov Samandar",
+        "timestamp": "2026-05-18 01:16:18.288629"
+    },
+    {
+        "action": "verified",
+        "user_id": 8252359524,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 01:17:09.489302"
+    },
+    {
+        "action": "verified",
+        "user_id": 8252359524,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 01:18:51.504036"
+    },
+    {
+        "action": "feedback",
+        "user_id": 8252359524,
+        "details": "Fikr qoldirildi: Fghfghju...",
+        "timestamp": "2026-05-18 01:19:04.462746"
+    },
+    {
+        "action": "reply_feedback",
+        "user_id": 5996676608,
+        "details": "Fikrga javob yuborildi: 8252359524",
+        "timestamp": "2026-05-18 01:19:23.092917"
+    },
+    {
+        "action": "reply_feedback",
+        "user_id": 5996676608,
+        "details": "Fikrga javob yuborildi: 5357661429",
+        "timestamp": "2026-05-18 01:19:58.010368"
+    },
+    {
+        "action": "new_user",
+        "user_id": 5313616373,
+        "details": "Yangi foydalanuvchi: 𝑱𝒂𝒎𝒔𝒉𝒊𝒅𝒋𝒐𝒏",
+        "timestamp": "2026-05-18 10:35:21.768111"
+    },
+    {
+        "action": "new_user",
+        "user_id": 5113458935,
+        "details": "Yangi foydalanuvchi: Diyorbek Soataliyev NamDTU",
+        "timestamp": "2026-05-18 10:35:21.770973"
+    },
+    {
+        "action": "new_user",
+        "user_id": 7688174848,
+        "details": "Yangi foydalanuvchi: Doston",
+        "timestamp": "2026-05-18 10:36:08.697655"
+    },
+    {
+        "action": "verified",
+        "user_id": 7688174848,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 10:36:31.208148"
+    },
+    {
+        "action": "new_user",
+        "user_id": 6228437980,
+        "details": "Yangi foydalanuvchi: 𝑱𝒂𝒎𝒔𝒉𝒊𝒅𝒋𝒐𝒏",
+        "timestamp": "2026-05-18 10:38:28.224489"
+    },
+    {
+        "action": "verified",
+        "user_id": 6228437980,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 10:38:41.517615"
+    },
+    {
+        "action": "edit_poll",
+        "user_id": 5996676608,
+        "details": "Tavsif o'zgartirildi",
+        "timestamp": "2026-05-18 10:40:00.786122"
+    },
+    {
+        "action": "vote",
+        "user_id": 6228437980,
+        "details": "Ovoz berildi: Koordinatorlarga ovoz bering -> (Muhandislik) Xusanov Samandar",
+        "timestamp": "2026-05-18 10:40:25.062458"
+    },
+    {
+        "action": "end_poll",
+        "user_id": 5996676608,
+        "details": "So'rovnoma tugatildi: Koordinatorlarga ovoz bering",
+        "timestamp": "2026-05-18 10:41:06.842350"
+    },
+    {
+        "action": "backup",
+        "user_id": 5996676608,
+        "details": "Backup yaratildi: 20260518_190315",
+        "timestamp": "2026-05-18 19:03:15.766445"
+    },
+    {
+        "action": "verified",
+        "user_id": 5996676608,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 19:10:25.960449"
+    },
+    {
+        "action": "new_user",
+        "user_id": 5996676608,
+        "details": "Yangi foydalanuvchi: 𝕄𝔸ℚ𝕊𝕌𝔻𝕁𝕆ℕ ℂ𝕐𝔹𝔼ℝ",
+        "timestamp": "2026-05-18 23:01:16.708720"
+    },
+    {
+        "action": "new_user",
+        "user_id": 5357661429,
+        "details": "Yangi foydalanuvchi: ABBOSBEK 🇺🇿",
+        "timestamp": "2026-05-18 23:01:16.714460"
+    },
+    {
+        "action": "verified",
+        "user_id": 5996676608,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 23:03:03.666417"
+    },
+    {
+        "action": "new_user",
+        "user_id": 8252359524,
+        "details": "Yangi foydalanuvchi: Maqsudjon Mahammadjonov",
+        "timestamp": "2026-05-18 23:06:19.909347"
+    },
+    {
+        "action": "verified",
+        "user_id": 8252359524,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 23:06:26.569398"
+    },
+    {
+        "action": "feedback",
+        "user_id": 8252359524,
+        "details": "Fikr qoldirildi: ℹ️ Ma'lumot...",
+        "timestamp": "2026-05-18 23:06:35.066600"
+    },
+    {
+        "action": "group_broadcast",
+        "user_id": 5996676608,
+        "details": "Guruhlarga xabar yuborildi: 0 ta guruhga",
+        "timestamp": "2026-05-18 23:27:03.138335"
+    },
+    {
+        "action": "backup",
+        "user_id": 5996676608,
+        "details": "Backup yaratildi: 20260518_232709",
+        "timestamp": "2026-05-18 23:27:09.082108"
+    },
+    {
+        "action": "add_channel",
+        "user_id": 5996676608,
+        "details": "Kanal qo'shildi: @namdtuyoshlari",
+        "timestamp": "2026-05-18 23:31:04.701880"
+    },
+    {
+        "action": "new_user",
+        "user_id": 7847604729,
+        "details": "Yangi foydalanuvchi: ㅤㅤn.5ㅤㅤㅤ",
+        "timestamp": "2026-05-18 23:31:28.046965"
+    },
+    {
+        "action": "remove_channel",
+        "user_id": 5996676608,
+        "details": "Kanal o'chirildi: @namdtuyoshlari",
+        "timestamp": "2026-05-18 23:31:48.728837"
+    },
+    {
+        "action": "add_channel",
+        "user_id": 5996676608,
+        "details": "Kanal qo'shildi: @nws_alfa_07",
+        "timestamp": "2026-05-18 23:32:30.294365"
+    },
+    {
+        "action": "verified",
+        "user_id": 7847604729,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 23:32:42.789755"
+    },
+    {
+        "action": "feedback",
+        "user_id": 7847604729,
+        "details": "Fikr qoldirildi: Kk...",
+        "timestamp": "2026-05-18 23:33:04.403614"
+    },
+    {
+        "action": "remove_channel",
+        "user_id": 5996676608,
+        "details": "Kanal o'chirildi: @nws_alfa_07",
+        "timestamp": "2026-05-18 23:33:57.955753"
+    },
+    {
+        "action": "add_channel",
+        "user_id": 5996676608,
+        "details": "Kanal qo'shildi: @namdtuyoshlari",
+        "timestamp": "2026-05-18 23:34:47.038344"
+    },
+    {
+        "action": "verified",
+        "user_id": 5996676608,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 23:36:05.367039"
+    },
+    {
+        "action": "new_user",
+        "user_id": 8370915540,
+        "details": "Yangi foydalanuvchi: 𝑱𝒂𝒎𝒔𝒉𝒊𝒅𝒋𝒐𝒏",
+        "timestamp": "2026-05-18 23:36:18.784176"
+    },
+    {
+        "action": "verified",
+        "user_id": 8370915540,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 23:36:26.027666"
+    },
+    {
+        "action": "create_poll",
+        "user_id": 5996676608,
+        "details": "So'rovnoma yaratildi: Yilning eng yaxshi koordinatoriga ovoz bering!",
+        "timestamp": "2026-05-18 23:39:40.073725"
+    },
+    {
+        "action": "add_admin",
+        "user_id": 5996676608,
+        "details": "Admin qo'shildi: 6228437980",
+        "timestamp": "2026-05-18 23:40:49.494614"
+    },
+    {
+        "action": "new_user",
+        "user_id": 6228437980,
+        "details": "Yangi foydalanuvchi: 𝑱𝒂𝒎𝒔𝒉𝒊𝒅𝒋𝒐𝒏",
+        "timestamp": "2026-05-18 23:41:04.478756"
+    },
+    {
+        "action": "verified",
+        "user_id": 6228437980,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 23:41:17.352040"
+    },
+    {
+        "action": "verified",
+        "user_id": 8252359524,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 23:41:48.306342"
+    },
+    {
+        "action": "verified",
+        "user_id": 8252359524,
+        "details": "Foydalanuvchi tasdiqlandi",
+        "timestamp": "2026-05-18 23:42:17.738369"
+    },
+    {
+        "action": "vote",
+        "user_id": 8252359524,
+        "details": "Ovoz berildi: Yilning eng yaxshi koordinatoriga ovoz bering! -> (Muhandislik) Xusanov Samandar",
+        "timestamp": "2026-05-18 23:43:00.164627"
+    },
+    {
+        "action": "group_broadcast",
+        "user_id": 6228437980,
+        "details": "Guruhlarga xabar yuborildi: 0 ta guruhga",
+        "timestamp": "2026-05-18 23:43:35.823288"
+    },
+    {
+        "action": "reset_votes",
+        "user_id": 5996676608,
+        "details": "Barcha ovozlar tozalandi",
+        "timestamp": "2026-05-18 23:43:41.230092"
+    }
+]
