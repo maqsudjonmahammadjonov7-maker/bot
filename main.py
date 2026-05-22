@@ -173,6 +173,11 @@ def is_blacklisted(user_id: int) -> bool:
     blacklist = load_blacklist()
     return user_id in blacklist
 
+def is_user_verified(user_id: int) -> bool:
+    users = load_users()
+    user_id_str = str(user_id)
+    return users.get(user_id_str, {}).get("verified", False)
+
 # ================= CHANNEL CHECK =================
 async def check_sub(user_id: int) -> bool:
     channels = load_channels()
@@ -223,6 +228,10 @@ class EditPollState(StatesGroup):
 
 class ChannelState(StatesGroup):
     waiting_for_channel = State()
+
+class ReplyFeedbackState(StatesGroup):
+    waiting_for_feedback_id = State()
+    waiting_for_reply_message = State()
 
 # ================= KEYBOARDS =================
 # Ixcham admin panel - tugmalar yonma-yon
@@ -491,6 +500,7 @@ async def start_command(message: Message):
         )
         return
 
+    # Agar foydalanuvchi allaqachon tasdiqlangan bo'lsa, qayta ro'yxatdan o'tkazilmaydi
     if users[user_id_str].get("verified"):
         if is_admin(user_id):
             await message.answer("✅ Xush kelibsiz! Admin panel", reply_markup=get_admin_keyboard(user_id))
@@ -505,11 +515,18 @@ async def start_command(message: Message):
 # ================= CONTACT & CAPTCHA =================
 @dp.message(F.contact)
 async def contact(message: Message, state: FSMContext):
+    user_id = message.from_user.id
+    
+    # Agar foydalanuvchi allaqachon tasdiqlangan bo'lsa, qayta captcha so'ralmaydi
+    if is_user_verified(user_id):
+        await message.answer("✅ Siz allaqachon ro'yxatdan o'tgansiz!", reply_markup=user_menu() if not is_admin(user_id) else get_admin_keyboard(user_id))
+        return
+    
     phone = message.contact.phone_number
     
     users = load_users()
-    user_id = str(message.from_user.id)
-    users[user_id]["phone"] = phone
+    user_id_str = str(user_id)
+    users[user_id_str]["phone"] = phone
     save_users(users)
 
     a, b = random.randint(1, 9), random.randint(1, 9)
@@ -522,6 +539,14 @@ async def contact(message: Message, state: FSMContext):
 
 @dp.message(VerifyState.captcha)
 async def captcha(message: Message, state: FSMContext):
+    user_id = message.from_user.id
+    
+    # Agar captcha davomida tasdiqlangan bo'lib qolsa
+    if is_user_verified(user_id):
+        await state.clear()
+        await message.answer("✅ Siz allaqachon tasdiqlangansiz!", reply_markup=user_menu() if not is_admin(user_id) else get_admin_keyboard(user_id))
+        return
+    
     data = await state.get_data()
     
     if not message.text or not message.text.strip().isdigit():
@@ -530,14 +555,14 @@ async def captcha(message: Message, state: FSMContext):
     
     if int(data["answer"]) == int(message.text.strip()):
         users = load_users()
-        users[str(message.from_user.id)]["verified"] = True
+        users[str(user_id)]["verified"] = True
         save_users(users)
         await state.clear()
         
-        add_log("verified", message.from_user.id, "Foydalanuvchi tasdiqlandi")
+        add_log("verified", user_id, "Foydalanuvchi tasdiqlandi")
         
-        if is_admin(message.from_user.id):
-            await message.answer("✅ Tasdiqlandi! Admin panel", reply_markup=get_admin_keyboard(message.from_user.id))
+        if is_admin(user_id):
+            await message.answer("✅ Tasdiqlandi! Admin panel", reply_markup=get_admin_keyboard(user_id))
         else:
             await message.answer("✅ Tasdiqlandi!", reply_markup=user_menu())
     else:
@@ -550,6 +575,14 @@ async def captcha(message: Message, state: FSMContext):
 
 @dp.callback_query(F.data == "retry_captcha")
 async def retry_captcha(call: CallbackQuery, state: FSMContext):
+    user_id = call.from_user.id
+    
+    if is_user_verified(user_id):
+        await state.clear()
+        await call.message.edit_text("✅ Siz allaqachon tasdiqlangansiz!")
+        await call.answer()
+        return
+    
     await state.set_state(VerifyState.captcha)
     a, b = random.randint(1, 9), random.randint(1, 9)
     await state.update_data(answer=a + b)
@@ -560,13 +593,23 @@ async def retry_captcha(call: CallbackQuery, state: FSMContext):
 
 @dp.callback_query(F.data == "check_sub")
 async def check_sub_callback(call: CallbackQuery):
-    sub = await check_sub(call.from_user.id)
+    user_id = call.from_user.id
+    sub = await check_sub(user_id)
+    
     if sub:
-        await call.message.delete()
-        await call.message.answer(
-            "✅ Obuna tasdiqlandi!\n\n📱 Telefon raqamingizni yuboring",
-            reply_markup=phone_kb()
-        )
+        # Agar foydalanuvchi allaqachon tasdiqlangan bo'lsa
+        if is_user_verified(user_id):
+            await call.message.delete()
+            await call.message.answer(
+                "✅ Obuna tasdiqlandi!",
+                reply_markup=user_menu() if not is_admin(user_id) else get_admin_keyboard(user_id)
+            )
+        else:
+            await call.message.delete()
+            await call.message.answer(
+                "✅ Obuna tasdiqlandi!\n\n📱 Telefon raqamingizni yuboring",
+                reply_markup=phone_kb()
+            )
     else:
         await call.answer("❌ Siz hali obuna bo'lmadingiz!", show_alert=True)
 
@@ -717,8 +760,9 @@ async def vote_menu(message: Message):
         await message.answer("❌ Avval ro'yxatdan o'ting! /start")
         return
 
+    # Ovoz berish faqat 1 marta - tekshirish
     if users[user_id_str].get("votes") == active_poll["id"]:
-        await message.answer("❌ Siz allaqachon ovoz bergansiz!")
+        await message.answer("❌ Siz allaqachon ovoz bergansiz! Bir marta ovoz berish mumkin.")
         return
 
     total_votes = sum(c['votes'] for c in active_poll['candidates'])
@@ -761,8 +805,9 @@ async def vote(call: CallbackQuery):
     users = load_users()
     user_id_str = str(user_id)
 
+    # Ovoz berish faqat 1 marta - tekshirish
     if users.get(user_id_str, {}).get("votes") == active_poll["id"]:
-        await call.answer("❌ Siz ovoz bergansiz!", show_alert=True)
+        await call.answer("❌ Siz allaqachon ovoz bergansiz! Bir marta ovoz berish mumkin.", show_alert=True)
         return
 
     candidate = next((c for c in active_poll["candidates"] if c["id"] == candidate_id), None)
@@ -865,33 +910,47 @@ async def feedback_save(message: Message, state: FSMContext):
         return
     
     feedbacks = load_feedback()
+    feedback_id = len(feedbacks) + 1
     feedbacks.append({
+        "id": feedback_id,
         "user_id": message.from_user.id,
         "username": message.from_user.username,
         "full_name": message.from_user.full_name,
         "message": message.text,
-        "created_at": str(datetime.now())
+        "created_at": str(datetime.now()),
+        "replied": False,
+        "reply": None,
+        "replied_at": None,
+        "replied_by": None
     })
     save_feedback(feedbacks)
     
     add_log("feedback", message.from_user.id, f"Fikr qoldirildi: {message.text[:50]}...")
     
     await state.clear()
-    await message.answer("✅ Fikringiz uchun rahmat! Administratorlar ko'rib chiqishadi.")
+    await message.answer("✅ Fikringiz uchun rahmat! Administratorlar ko'rib chiqishadi va javob berishadi.")
     
     admins = load_admins()
     for admin_id in admins:
         try:
+            builder = InlineKeyboardBuilder()
+            builder.button(text="💬 Javob berish", callback_data=f"reply_feedback_{feedback_id}")
+            builder.button(text="👁 Ko'rish", callback_data=f"view_feedback_{feedback_id}")
+            builder.adjust(1)
+            
             await bot.send_message(
                 admin_id,
-                f"💬 <b>Yangi fikr</b>\n\n"
+                f"💬 <b>Yangi fikr #{feedback_id}</b>\n\n"
                 f"👤 Foydalanuvchi: {message.from_user.full_name}\n"
                 f"🆔 ID: {message.from_user.id}\n"
-                f"📝 Xabar: {message.text}"
+                f"📝 Xabar: {message.text}\n\n"
+                f"📅 Vaqt: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+                reply_markup=builder.as_markup()
             )
         except Exception:
             pass
 
+# Admin fikrlarga javob berish
 @dp.message(F.text == "💬 Fikrlar")
 async def view_feedbacks(message: Message):
     if not is_admin(message.from_user.id):
@@ -903,11 +962,221 @@ async def view_feedbacks(message: Message):
         await message.answer("💬 Hech qanday fikr yo'q!")
         return
     
-    text = "💬 <b>Fikrlar ro'yxati</b>\n\n"
-    for i, fb in enumerate(reversed(feedbacks[-10:]), 1):
-        text += f"{i}. {fb['full_name']}: {fb['message'][:50]}...\n"
+    # Javob berilmagan fikrlarni birinchi chiqarish
+    unreplied = [fb for fb in feedbacks if not fb.get("replied", False)]
+    replied = [fb for fb in feedbacks if fb.get("replied", False)]
     
-    await message.answer(text)
+    text = "💬 <b>Fikrlar ro'yxati</b>\n\n"
+    
+    if unreplied:
+        text += "🟡 <b>Javob berilmaganlar:</b>\n"
+        for fb in unreplied[-5:]:
+            text += f"#{fb['id']} - {fb['full_name']}: {fb['message'][:40]}...\n"
+    
+    if replied:
+        text += "\n✅ <b>Javob berilganlar:</b>\n"
+        for fb in replied[-5:]:
+            text += f"#{fb['id']} - {fb['full_name']}: {fb['message'][:30]}...\n"
+    
+    text += f"\n📊 Jami: {len(feedbacks)} ta fikr (🟡 {len(unreplied)} ta javobsiz)"
+    
+    builder = InlineKeyboardBuilder()
+    builder.button(text="📋 Barcha fikrlar", callback_data="list_all_feedbacks")
+    builder.button(text="🟡 Javobsizlar", callback_data="list_unreplied_feedbacks")
+    builder.button(text="🔙 Orqaga", callback_data="back_to_admin")
+    builder.adjust(1)
+    
+    await message.answer(text, reply_markup=builder.as_markup())
+
+@dp.callback_query(F.data == "list_all_feedbacks")
+async def list_all_feedbacks(call: CallbackQuery):
+    if not is_admin(call.from_user.id):
+        await call.answer("❌ Ruxsat yo'q!", show_alert=True)
+        return
+    
+    feedbacks = load_feedback()
+    if not feedbacks:
+        await call.message.answer("💬 Hech qanday fikr yo'q!")
+        await call.answer()
+        return
+    
+    builder = InlineKeyboardBuilder()
+    for fb in reversed(feedbacks[-20:]):
+        status = "✅" if fb.get("replied", False) else "🟡"
+        builder.button(text=f"{status} #{fb['id']} - {fb['full_name'][:15]}", callback_data=f"view_feedback_{fb['id']}")
+    builder.adjust(1)
+    builder.button(text="🔙 Orqaga", callback_data="back_to_feedback_menu")
+    
+    await call.message.edit_text("📋 <b>Barcha fikrlar</b>", reply_markup=builder.as_markup())
+    await call.answer()
+
+@dp.callback_query(F.data == "list_unreplied_feedbacks")
+async def list_unreplied_feedbacks(call: CallbackQuery):
+    if not is_admin(call.from_user.id):
+        await call.answer("❌ Ruxsat yo'q!", show_alert=True)
+        return
+    
+    feedbacks = load_feedback()
+    unreplied = [fb for fb in feedbacks if not fb.get("replied", False)]
+    
+    if not unreplied:
+        await call.message.answer("✅ Barcha fikrlarga javob berilgan!")
+        await call.answer()
+        return
+    
+    builder = InlineKeyboardBuilder()
+    for fb in unreplied:
+        builder.button(text=f"🟡 #{fb['id']} - {fb['full_name'][:15]}", callback_data=f"reply_feedback_{fb['id']}")
+    builder.adjust(1)
+    builder.button(text="🔙 Orqaga", callback_data="back_to_feedback_menu")
+    
+    await call.message.edit_text("🟡 <b>Javob berilmagan fikrlar</b>", reply_markup=builder.as_markup())
+    await call.answer()
+
+@dp.callback_query(F.data.startswith("view_feedback_"))
+async def view_single_feedback(call: CallbackQuery):
+    if not is_admin(call.from_user.id):
+        await call.answer("❌ Ruxsat yo'q!", show_alert=True)
+        return
+    
+    try:
+        feedback_id = int(call.data.split("_")[2])
+    except (IndexError, ValueError):
+        await call.answer("❌ Xatolik!", show_alert=True)
+        return
+    
+    feedbacks = load_feedback()
+    feedback = next((fb for fb in feedbacks if fb["id"] == feedback_id), None)
+    
+    if not feedback:
+        await call.answer("❌ Fikr topilmadi!", show_alert=True)
+        return
+    
+    text = (
+        f"💬 <b>Fikr #{feedback['id']}</b>\n\n"
+        f"👤 Foydalanuvchi: {feedback['full_name']}\n"
+        f"🆔 ID: {feedback['user_id']}\n"
+        f"📝 Xabar: {feedback['message']}\n"
+        f"📅 Vaqt: {feedback['created_at']}\n"
+    )
+    
+    if feedback.get("replied", False):
+        text += f"\n✅ <b>Javob:</b>\n{feedback['reply']}\n"
+        text += f"👨‍💼 Javob bergan: {feedback['replied_by']}\n"
+        text += f"📅 Javob vaqti: {feedback['replied_at']}\n"
+    
+    builder = InlineKeyboardBuilder()
+    if not feedback.get("replied", False):
+        builder.button(text="💬 Javob berish", callback_data=f"reply_feedback_{feedback_id}")
+    builder.button(text="🔙 Orqaga", callback_data="back_to_feedback_list")
+    
+    await call.message.edit_text(text, reply_markup=builder.as_markup())
+    await call.answer()
+
+@dp.callback_query(F.data.startswith("reply_feedback_"))
+async def reply_feedback_start(call: CallbackQuery, state: FSMContext):
+    if not is_admin(call.from_user.id):
+        await call.answer("❌ Ruxsat yo'q!", show_alert=True)
+        return
+    
+    try:
+        feedback_id = int(call.data.split("_")[2])
+    except (IndexError, ValueError):
+        await call.answer("❌ Xatolik!", show_alert=True)
+        return
+    
+    feedbacks = load_feedback()
+    feedback = next((fb for fb in feedbacks if fb["id"] == feedback_id), None)
+    
+    if not feedback:
+        await call.answer("❌ Fikr topilmadi!", show_alert=True)
+        return
+    
+    if feedback.get("replied", False):
+        await call.answer("⚠️ Bu fikrga allaqachon javob berilgan!", show_alert=True)
+        return
+    
+    await state.update_data(reply_feedback_id=feedback_id, reply_user_id=feedback["user_id"])
+    await state.set_state(ReplyFeedbackState.waiting_for_reply_message)
+    
+    await call.message.answer(
+        f"💬 <b>Javob yozish - Fikr #{feedback_id}</b>\n\n"
+        f"Foydalanuvchi: {feedback['full_name']}\n"
+        f"Xabar: {feedback['message']}\n\n"
+        f"📝 Javob matnini yuboring:\n\n"
+        f"❌ Bekor qilish uchun /cancel",
+        parse_mode=ParseMode.HTML
+    )
+    await call.answer()
+
+@dp.message(ReplyFeedbackState.waiting_for_reply_message)
+async def reply_feedback_send(message: Message, state: FSMContext):
+    if not is_admin(message.from_user.id):
+        return
+    
+    if message.text == "/cancel":
+        await state.clear()
+        await message.answer("❌ Bekor qilindi!", reply_markup=get_admin_keyboard(message.from_user.id))
+        return
+    
+    data = await state.get_data()
+    feedback_id = data.get("reply_feedback_id")
+    user_id = data.get("reply_user_id")
+    reply_text = message.text
+    
+    if not feedback_id or not user_id:
+        await state.clear()
+        await message.answer("❌ Xatolik yuz berdi!")
+        return
+    
+    feedbacks = load_feedback()
+    feedback = next((fb for fb in feedbacks if fb["id"] == feedback_id), None)
+    
+    if not feedback or feedback.get("replied", False):
+        await state.clear()
+        await message.answer("❌ Fikr topilmadi yoki allaqachon javob berilgan!")
+        return
+    
+    # Javobni saqlash
+    feedback["replied"] = True
+    feedback["reply"] = reply_text
+    feedback["replied_at"] = str(datetime.now())
+    feedback["replied_by"] = message.from_user.full_name
+    save_feedback(feedbacks)
+    
+    # Foydalanuvchiga javob yuborish
+    try:
+        await bot.send_message(
+            user_id,
+            f"💬 <b>Admin javobi</b>\n\n"
+            f"Sizning fikringizga javob:\n\n"
+            f"📝 {reply_text}\n\n"
+            f"🤝 Fikringiz uchun rahmat!",
+            parse_mode=ParseMode.HTML
+        )
+    except Exception as e:
+        await message.answer(f"⚠️ Foydalanuvchiga xabar yuborib bo'lmadi: {e}")
+    
+    add_log("reply_feedback", message.from_user.id, f"Fikr #{feedback_id} ga javob berildi")
+    
+    await state.clear()
+    await message.answer(
+        f"✅ Javob yuborildi!\n\n"
+        f"📝 Fikr #{feedback_id}\n"
+        f"👤 Foydalanuvchi ID: {user_id}\n"
+        f"💬 Javob: {reply_text}",
+        reply_markup=get_admin_keyboard(message.from_user.id)
+    )
+
+@dp.callback_query(F.data == "back_to_feedback_menu")
+async def back_to_feedback_menu(call: CallbackQuery):
+    await view_feedbacks(call.message)
+    await call.answer()
+
+@dp.callback_query(F.data == "back_to_feedback_list")
+async def back_to_feedback_list(call: CallbackQuery):
+    await list_all_feedbacks(call)
+    await call.answer()
 
 # ================= BLACKLIST =================
 @dp.message(F.text == "🚫 Blacklist")
@@ -1418,8 +1687,7 @@ async def remove_candidate_list(call: CallbackQuery):
     
     if len(active_poll["candidates"]) <= 2:
         await call.answer("❌ Kamida 2 ta nomzod bo'lishi kerak!", show_alert=True)
-        return
-    
+        return    
     builder = InlineKeyboardBuilder()
     for c in active_poll["candidates"]:
         builder.button(text=f"❌ {c['name']}", callback_data=f"remove_cand_{c['id']}")
@@ -1546,13 +1814,13 @@ async def info(message: Message):
         f"1️⃣ Kanallarga obuna bo'ling (agar mavjud bo'lsa)\n"
         f"2️⃣ Telefon raqam yuboring\n"
         f"3️⃣ Captchani yeching\n"
-        f"4️⃣ Ovoz bering\n\n"
+        f"4️⃣ Ovoz bering (faqat 1 marta)\n\n"
         f"📊 <b>Xususiyatlar:</b>\n"
         f"• Real vaqtda natijalar\n"
         f"• Bir marta ovoz berish\n"
         f"• Avtomatik obuna tekshiruvi\n"
         f"• So'rovnoma havolasi\n"
-        f"• Fikr bildirish\n"
+        f"• Fikr bildirish va admin javobi\n"
         f"• So'rovnoma tahrirlash\n\n"
         f"📺 <b>Majburiy kanallar:</b>\n{channels_text}\n\n"
         f"📊 So'rovnoma holati: {poll_status}\n"
@@ -1576,7 +1844,7 @@ async def help_command(message: Message):
             "👑 Adminlar - Admin qo'shish/o'chirish (faqat Super Admin)\n"
             "📺 Kanallar - Majburiy kanallar (faqat Super Admin)\n"
             "🚫 Blacklist - Foydalanuvchini bloklash (faqat Super Admin)\n"
-            "💬 Fikrlar - Foydalanuvchi fikrlarini ko'rish\n"
+            "💬 Fikrlar - Foydalanuvchi fikrlarini ko'rish va javob berish\n"
             "📈 Statistika - Bot statistikasi\n"
             "📋 Loglar - Tizim loglari (faqat Super Admin)\n"
             "💾 Backup - Ma'lumotlar backup (faqat Super Admin)\n"
@@ -1591,10 +1859,11 @@ async def help_command(message: Message):
             "/start - Botni ishga tushirish\n"
             "/help - Yordam\n\n"
             "📌 <b>Menyu tugmalari:</b>\n"
-            "🗳 Ovoz berish - So'rovnomada ovoz berish\n"
+            "🗳 Ovoz berish - So'rovnomada ovoz berish (faqat 1 marta)\n"
             "📊 Natijalar - Joriy natijalarni ko'rish\n"
             "💬 Fikr bildirish - Bot haqida fikr qoldirish\n"
-            "ℹ️ Ma'lumot - Bot haqida ma'lumot"
+            "ℹ️ Ma'lumot - Bot haqida ma'lumot\n\n"
+            "⚠️ <b>Eslatma:</b> Bir marta ovoz berganingizdan keyin qayta ovoz berolmaysiz!"
         )
     
     await message.answer(text)
@@ -1798,7 +2067,7 @@ def index():
             </div>
             {% endif %}
             
-            </table>
+            <table>
                 <thead>
                     <tr>
                         <th>ID</th>
